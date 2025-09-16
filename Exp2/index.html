@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CSS Grid</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard" data-theme="light">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+                <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="nav-link active">📊 Dashboard</a></li>
+                    <li><a href="#" class="nav-link">👥 Users</a></li>
+                    <li><a href="#" class="nav-link">📈 Analytics</a></li>
+                    <li><a href="#" class="nav-link">⚙️ Settings</a></li>
+                    <li><a href="#" class="nav-link">📋 Reports</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="content-header">
+                <h1>Dashboard Overview</h1>
+                <div class="header-actions">
+                    <button id="theme-toggle" class="theme-toggle">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-text">Dark Mode</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3>Total Users</h3>
+                        <p class="stat-number">2,543</p>
+                        <span class="stat-change positive">+12%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3>Revenue</h3>
+                        <p class="stat-number">$45,231</p>
+                        <span class="stat-change positive">+8%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <h3>Orders</h3>
+                        <p class="stat-number">1,234</p>
+                        <span class="stat-change negative">-3%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <h3>Growth</h3>
+                        <p class="stat-number">23.5%</p>
+                        <span class="stat-change positive">+5%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h3>Sales Analytics</h3>
+                    <div class="chart-placeholder">
+                        <div class="chart-bars">
+                            <div class="bar" style="height: 60%"></div>
+                            <div class="bar" style="height: 80%"></div>
+                            <div class="bar" style="height: 45%"></div>
+                            <div class="bar" style="height: 90%"></div>
+                            <div class="bar" style="height: 70%"></div>
+                            <div class="bar" style="height: 85%"></div>
+                        </div>
+                        <p>Monthly Sales Data</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>User Activity</h3>
+                    <div class="chart-placeholder">
+                        <div class="pie-chart">
+                            <div class="pie-slice" style="--percentage: 40%"></div>
+                            <div class="pie-slice" style="--percentage: 30%"></div>
+                            <div class="pie-slice" style="--percentage: 20%"></div>
+                            <div class="pie-slice" style="--percentage: 10%"></div>
+                        </div>
+                        <p>User Distribution</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="activity-section">
+                <h3>Recent Activity</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">👤</div>
+                        <div class="activity-content">
+                            <p><strong>New user registered:</strong> john.doe@example.com</p>
+                            <span class="activity-time">2 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">💰</div>
+                        <div class="activity-content">
+                            <p><strong>Payment received:</strong> $299.00</p>
+                            <span class="activity-time">15 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">📊</div>
+                        <div class="activity-content">
+                            <p><strong>Report generated:</strong> Monthly Analytics</p>
+                            <span class="activity-time">1 hour ago</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
