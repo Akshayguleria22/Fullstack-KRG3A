@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mental_health
+      auto-index-creation: true
+  main:
+    allow-bean-definition-overriding: true
+
+app:
+  jwt:
+    secret: change-this-super-secret-key-please
+    expiration: 604800000 # 7 days
+
+logging:
+  level:
+    root: INFO

@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "app.jwt",
+      "type": "com.example.mentalhealth.config.JwtProperties",
+      "sourceType": "com.example.mentalhealth.config.JwtProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.jwt.expiration",
+      "type": "java.lang.Long",
+      "sourceType": "com.example.mentalhealth.config.JwtProperties"
+    },
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.example.mentalhealth.config.JwtProperties"
+    }
+  ],
+  "hints": []
+}
