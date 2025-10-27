@@ -13,7 +13,21 @@ app:
   jwt:
     secret: change-this-super-secret-key-please
     expiration: 604800000 # 7 days
+  chat:
+    crypto:
+      # Base64-encoded 32-byte (256-bit) key for AES-GCM at-rest encryption of chat messages
+      # Generate one with: openssl rand -base64 32
+      base64-key: ${CHAT_CRYPTO_KEY:}
 
 logging:
   level:
     root: INFO
+
+# To enable TLS (wss), provide a keystore and uncomment below:
+#server:
+#  ssl:
+#    enabled: true
+#    key-store: classpath:keystore.p12
+#    key-store-type: PKCS12
+#    key-store-password: changeit
+#    key-alias: server
