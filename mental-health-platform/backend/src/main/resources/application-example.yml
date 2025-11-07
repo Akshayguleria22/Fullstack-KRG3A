@@ -1,0 +1,44 @@
+# Application Configuration
+# Copy this file to application-local.yml and configure for your environment
+
+server:
+  port: 8080
+  
+spring:
+  application:
+    name: mental-health-platform
+  data:
+    mongodb:
+      # For local MongoDB (default)
+      uri: mongodb://localhost:27017/mentalhealth
+      
+      # For MongoDB Atlas (cloud) - uncomment and update
+      # uri: mongodb+srv://<username>:<password>@<cluster>.mongodb.net/mentalhealth?retryWrites=true&w=majority
+      
+      auto-index-creation: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# JWT Configuration - CHANGE THIS IN PRODUCTION!
+jwt:
+  # Generate a secure 256-bit secret: https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx
+  secret: ${JWT_SECRET:YourSuperSecretKeyForJWTTokenGenerationMustBe256BitsLongForHS256AlgorithmToWorkProperly}
+  expiration: 86400000 # 24 hours in milliseconds
+
+# Application Settings
+app:
+  cors:
+    # Add your frontend URLs here
+    allowed-origins: http://localhost:5173,http://localhost:3000
+  encryption:
+    # Generate a secure key for message encryption
+    key: ${ENCRYPTION_KEY:AES256BitEncryptionKeyForMessages}
+
+# Logging
+logging:
+  level:
+    com.mentalhealth: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.data.mongodb: INFO
