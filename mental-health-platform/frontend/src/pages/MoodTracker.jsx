@@ -95,7 +95,6 @@ const MoodTracker = () => {
           </Typography>
           <Box
             component={motion.div}
-            animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             sx={{ fontSize: 40 }}
           >

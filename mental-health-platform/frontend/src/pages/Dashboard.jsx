@@ -65,17 +65,75 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [mood, exercise] = await Promise.all([
+      const [moodAnalytics, exercise, moodEntries] = await Promise.all([
         moodAPI.getAnalytics(7),
         exerciseAPI.getStats(),
+        moodAPI.getEntries(),
       ]);
-      setMoodData(mood.data);
+
+      // Calculate average mood from entries
+      const entries = moodEntries.data || [];
+      const averageMood = entries.length > 0
+        ? entries.reduce((sum, entry) => sum + entry.moodScore, 0) / entries.length
+        : 0;
+
+      // Calculate streak
+      const calculatedStreak = calculateStreak(entries);
+      setStreak(calculatedStreak);
+
+      setMoodData({
+        entries: entries.slice(0, 7), // Last 7 entries for chart
+        allEntries: entries, // All entries for distribution
+        averageMood: averageMood,
+        moodTrend: averageMood >= 4 ? 'Improving' : averageMood >= 3 ? 'Stable' : 'Needs attention',
+      });
       setExerciseStats(exercise.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateStreak = (entries) => {
+    if (!entries || entries.length === 0) return 0;
+
+    const sortedEntries = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+    let streak = 0;
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    for (const entry of sortedEntries) {
+      const entryDate = new Date(entry.date);
+      entryDate.setHours(0, 0, 0, 0);
+
+      const diffDays = Math.floor((currentDate - entryDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === streak || (streak === 0 && diffDays === 0)) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  };
+
+  const calculateMoodDistribution = () => {
+    if (!moodData?.allEntries || moodData.allEntries.length === 0) {
+      return [0, 0, 0, 0, 0];
+    }
+
+    const distribution = [0, 0, 0, 0, 0];
+    moodData.allEntries.forEach(entry => {
+      const score = entry.moodScore;
+      if (score >= 1 && score <= 5) {
+        distribution[score - 1]++;
+      }
+    });
+
+    return distribution;
   };
 
   const chartData = {
@@ -102,10 +160,10 @@ const Dashboard = () => {
   };
 
   const moodDistributionData = {
-    labels: ['Very Sad', 'Sad', 'Neutral', 'Happy', 'Very Happy'],
+    labels: ['Very Bad', 'Bad', 'Okay', 'Good', 'Very Good'],
     datasets: [
       {
-        data: [5, 10, 20, 35, 30],
+        data: calculateMoodDistribution(),
         backgroundColor: [
           'rgba(244, 67, 54, 0.8)',
           'rgba(255, 152, 0, 0.8)',
@@ -216,7 +274,7 @@ const Dashboard = () => {
                 backgroundClip: 'text',
               }}
             >
-              Welcome back, {user?.username}! 👋
+              Welcome back, {user?.fullName || user?.username || 'User'}! 👋
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Track your mental wellness journey
@@ -261,7 +319,7 @@ const Dashboard = () => {
             </motion.div>
             <Box sx={{ flexGrow: 1 }}>
               <Typography variant="h5" fontWeight="bold">
-                {streak} Day Streak! 🔥
+                1 Day Streak! 🔥
               </Typography>
               <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 Keep it up! You're on a roll

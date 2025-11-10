@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Grid,
@@ -26,30 +26,99 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { moodAPI, exerciseAPI } from '../services/api';
 
 const Profile = () => {
   const theme = useTheme();
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    fullName: user?.fullName || 'John Doe',
-    email: user?.email || 'john@example.com',
-    phone: '+1 234 567 8900',
-    bio: 'Mental wellness enthusiast 🌟',
-    joinedDate: 'January 2025',
+    fullName: user?.fullName || user?.username || 'User',
+    email: user?.email || 'Not provided',
+    phone: user?.phone || 'Not provided',
+    bio: user?.bio || 'Mental wellness enthusiast 🌟',
+    joinedDate: user?.createdAt
+      ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+      : 'Recently',
   });
 
-  const stats = [
-    { label: 'Mood Entries', value: 47, icon: <TrendingUp />, color: '#667eea' },
-    { label: 'Exercises Done', value: 23, icon: <Favorite />, color: '#f093fb' },
-    { label: 'Days Streak', value: 12, icon: <EmojiEvents />, color: '#fbbf24' },
-  ];
+  const [stats, setStats] = useState([
+    { label: 'Mood Entries', value: 0, icon: <TrendingUp />, color: '#667eea' },
+    { label: 'Exercises Done', value: 0, icon: <Favorite />, color: '#f093fb' },
+    { label: 'Days Streak', value: 0, icon: <EmojiEvents />, color: '#fbbf24' },
+  ]);
+
+  useEffect(() => {
+    fetchUserStats();
+  }, []);
+
+  const fetchUserStats = async () => {
+    try {
+      const [moodEntries, exerciseStats] = await Promise.all([
+        moodAPI.getEntries(),
+        exerciseAPI.getStats(),
+      ]);
+
+      const moodCount = moodEntries.data?.length || 0;
+      const exerciseCount = exerciseStats.data?.totalCompleted || 0;
+      const streak = calculateStreak(moodEntries.data || []);
+
+      setStats([
+        { label: 'Mood Entries', value: moodCount, icon: <TrendingUp />, color: '#667eea' },
+        { label: 'Exercises Done', value: exerciseCount, icon: <Favorite />, color: '#f093fb' },
+        { label: 'Days Streak', value: streak, icon: <EmojiEvents />, color: '#fbbf24' },
+      ]);
+    } catch (error) {
+      console.error('Error fetching user stats:', error);
+    }
+  };
+
+  const calculateStreak = (entries) => {
+    if (!entries || entries.length === 0) return 0;
+
+    const sortedEntries = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+    let streak = 0;
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    for (const entry of sortedEntries) {
+      const entryDate = new Date(entry.date);
+      entryDate.setHours(0, 0, 0, 0);
+
+      const diffDays = Math.floor((currentDate - entryDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === streak || (streak === 0 && diffDays === 0)) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  };
 
   const achievements = [
-    { title: '7 Day Streak', emoji: '🔥', unlocked: true },
-    { title: 'First Entry', emoji: '🌟', unlocked: true },
-    { title: '30 Day Streak', emoji: '💎', unlocked: false },
-    { title: 'Meditation Master', emoji: '🧘', unlocked: true },
+    {
+      title: '7 Day Streak',
+      emoji: '🔥',
+      unlocked: stats.find(s => s.label === 'Days Streak')?.value >= 7
+    },
+    {
+      title: 'First Entry',
+      emoji: '🌟',
+      unlocked: stats.find(s => s.label === 'Mood Entries')?.value >= 1
+    },
+    {
+      title: '30 Day Streak',
+      emoji: '💎',
+      unlocked: stats.find(s => s.label === 'Days Streak')?.value >= 30
+    },
+    {
+      title: 'Meditation Master',
+      emoji: '🧘',
+      unlocked: stats.find(s => s.label === 'Exercises Done')?.value >= 10
+    },
   ];
 
   return (
